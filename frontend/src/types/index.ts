@@ -25,6 +25,7 @@ export interface EmergencyContact {
 export interface Patient {
   id: string;
   user_id: string;
+  tipo_sangre?: string;
   alergias?: string[];
   enfermedades_cronicas?: string[];
   medicamentos_actuales?: string[];

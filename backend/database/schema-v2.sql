@@ -255,6 +255,174 @@ CREATE POLICY "Users can view own activity logs"
   USING (user_id = auth.uid());
 
 -- =============================================
+-- POLÍTICAS PARA DOCTORES
+-- =============================================
+
+-- Doctores pueden ver todos los usuarios (para buscar pacientes)
+CREATE POLICY "Doctors can view all users"
+  ON users FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+  );
+
+-- Doctores pueden ver todos los pacientes
+CREATE POLICY "Doctors can view all patients"
+  ON patients FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+  );
+
+-- Doctores pueden ver todas las historias clínicas
+CREATE POLICY "Doctors can view all medical records"
+  ON medical_records FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+  );
+
+-- Doctores pueden crear historias clínicas
+CREATE POLICY "Doctors can create medical records"
+  ON medical_records FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+    AND doctor_id = auth.uid()
+  );
+
+-- Doctores pueden actualizar historias clínicas que ellos crearon
+CREATE POLICY "Doctors can update own medical records"
+  ON medical_records FOR UPDATE
+  USING (doctor_id = auth.uid());
+
+-- Doctores pueden ver todos los archivos médicos
+CREATE POLICY "Doctors can view all medical files"
+  ON medical_files FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+  );
+
+-- Doctores pueden subir archivos médicos
+CREATE POLICY "Doctors can upload medical files"
+  ON medical_files FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+    AND uploaded_by = auth.uid()
+  );
+
+-- Doctores pueden ver logs de actividad de sus pacientes
+CREATE POLICY "Doctors can view patient activity logs"
+  ON activity_logs FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'DOCTOR'
+    )
+  );
+
+-- =============================================
+-- POLÍTICAS PARA ADMINISTRADORES (ACCESO TOTAL)
+-- =============================================
+
+-- Administradores pueden ver todos los usuarios
+CREATE POLICY "Admins can view all users"
+  ON users FOR SELECT
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden crear usuarios
+CREATE POLICY "Admins can create users"
+  ON users FOR INSERT
+  WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden actualizar usuarios
+CREATE POLICY "Admins can update users"
+  ON users FOR UPDATE
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden eliminar usuarios
+CREATE POLICY "Admins can delete users"
+  ON users FOR DELETE
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden gestionar todos los pacientes
+CREATE POLICY "Admins can manage all patients"
+  ON patients FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden gestionar todas las historias clínicas
+CREATE POLICY "Admins can manage all medical records"
+  ON medical_records FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden gestionar todos los archivos médicos
+CREATE POLICY "Admins can manage all medical files"
+  ON medical_files FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden gestionar todos los pagos
+CREATE POLICY "Admins can manage all payments"
+  ON payments FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden gestionar todas las notificaciones
+CREATE POLICY "Admins can manage all notifications"
+  ON notifications FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- Administradores pueden ver todos los logs de actividad
+CREATE POLICY "Admins can view all activity logs"
+  ON activity_logs FOR ALL
+  USING (
+    EXISTS (
+      SELECT 1 FROM users WHERE id = auth.uid() AND role = 'ADMINISTRADOR'
+    )
+  );
+
+-- =============================================
 -- DATOS INICIALES
 -- =============================================
 

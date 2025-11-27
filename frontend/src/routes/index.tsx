@@ -8,6 +8,9 @@ import PatientMedicalRecordsPage from '@/pages/patient/PatientMedicalRecordsPage
 import PatientQRCodePage from '@/pages/patient/QRCodePage';
 import PatientPaymentsPage from '@/pages/patient/PaymentsPage';
 import DoctorDashboard from '@/pages/doctor/DoctorDashboard';
+import DoctorPatientsPage from '@/pages/doctor/DoctorPatientsPage';
+import DoctorPatientDetailPage from '@/pages/doctor/DoctorPatientDetailPage';
+import DoctorNewRecordPage from '@/pages/doctor/DoctorNewRecordPage';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import AdminUsersPage from '@/pages/admin/AdminUsersPage';
 import AdminActivityPage from '@/pages/admin/AdminActivityPage';
@@ -84,6 +87,30 @@ export default function AppRoutes() {
           element={
             <ProtectedRoute allowedRoles={[ROLES.DOCTOR]}>
               <DoctorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="doctor/patients"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.DOCTOR]}>
+              <DoctorPatientsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="doctor/patients/:patientId"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.DOCTOR]}>
+              <DoctorPatientDetailPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="doctor/patients/:patientId/new-record"
+          element={
+            <ProtectedRoute allowedRoles={[ROLES.DOCTOR]}>
+              <DoctorNewRecordPage />
             </ProtectedRoute>
           }
         />
